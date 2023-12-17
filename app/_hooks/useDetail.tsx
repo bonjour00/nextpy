@@ -66,9 +66,7 @@ export default function useCourseDetail({ id }: { id: string }) {
     const fetchCourseDetail = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/courseDetail?id=${id}    `
-        );
+        const result = await axios.get(`./api/courseDetail?id=${id}    `);
         setCourseDetail(result.data);
         setLoading(false);
         console.log(result.data);
@@ -80,9 +78,7 @@ export default function useCourseDetail({ id }: { id: string }) {
     const fetchArticleDetail = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/articlesDetail?id=${id}    `
-        );
+        const result = await axios.get(`./api/articlesDetail?id=${id}    `);
         setArticleDetail(result.data);
         // console.log(result.data);
         setLoading(false);
@@ -97,9 +93,7 @@ export default function useCourseDetail({ id }: { id: string }) {
   useEffect(() => {
     const fetchCourseComment = async () => {
       try {
-        const result = await axios.get(
-          `hhttps://nextpy-bonjour00s-projects.vercel.app/api/comment?id=${id}&page=${page}`
-        );
+        const result = await axios.get(`./api/comment?id=${id}&page=${page}`);
         setComments(result.data);
         setLoading(false);
       } catch (error) {
