@@ -74,7 +74,7 @@ export default function MenuTool() {
             </Button>
           </div>
           <Dropdown>
-            <MenuButton variant="string">
+            <MenuButton>
               <Avatar />
             </MenuButton>
             <Menu>

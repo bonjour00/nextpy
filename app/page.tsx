@@ -57,6 +57,7 @@ export default function Home() {
                 而這個月為投資理財月，我們結合了python的機器學習以及金融知識!
               </Typography>
             </div>
+
             <Button
               variant="solid"
               size="md"
@@ -64,7 +65,12 @@ export default function Home() {
               aria-label="Explore Bahamas Islands"
               sx={{ ml: "auto", alignSelf: "center", fontWeight: 600 }}
             >
-              去看看
+              <a
+                href="https://colab.research.google.com/drive/1rS03adf0aPH12cNv4rEr35E_j1B5LEMB"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                去看看
+              </a>
             </Button>
           </CardContent>
         </Card>
