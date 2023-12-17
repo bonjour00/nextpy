@@ -167,41 +167,62 @@ export default function Course() {
           </Grid>
         </>
       )}
-      {tab == 1 && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          gap={3} // 根据需要调整卡片之间的间距
-          flexWrap="wrap"
-          margin={3}
-        >
-          {articleList.map((article: any) => (
-            <Card
-              key={article.id}
-              sx={{ width: 400, marginBottom: 2 }}
-              onClick={() => jumpLink(article)}
-            >
-              <div>
-                <Typography variant="h6">{article.title}</Typography>
-                <Typography variant="body2">{article.author}</Typography>
-                <Typography variant="body2">
-                  {article.updatedAt}/點閱率:{article.viewCount}
-                </Typography>
-              </div>
-              <AspectRatio minHeight="120px" maxHeight="200px">
-                {article.coverImage && (
-                  <img src={article.coverImage.url} loading="lazy" alt="" />
-                )}
-              </AspectRatio>
-              <CardContent>
-                <Typography fontSize="lg" fontWeight="lg">
-                  {article.previewDescription}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      )}
+      {tab == 1 &&
+        (loading ? (
+          <Box
+            sx={{
+              flexDirection: "column",
+              alignItems: "center",
+              width: 1058,
+              margin: "auto",
+              minWidth: 1058,
+            }}
+          >
+            <Skeleton variant="rectangular" width={1058} height={200} />
+            <Skeleton />
+            <Skeleton animation="wave" />
+            <Skeleton animation={false} />
+            <br />
+            <Skeleton variant="rectangular" width={1058} height={200} />
+            <Skeleton />
+            <Skeleton animation="wave" />
+            <Skeleton animation={false} />
+          </Box>
+        ) : (
+          <Box
+            display="flex"
+            justifyContent="center"
+            gap={3} // 根据需要调整卡片之间的间距
+            flexWrap="wrap"
+            margin={3}
+          >
+            {articleList.map((article: any) => (
+              <Card
+                key={article.id}
+                sx={{ width: 400, marginBottom: 2 }}
+                onClick={() => jumpLink(article)}
+              >
+                <div>
+                  <Typography variant="h6">{article.title}</Typography>
+                  <Typography variant="body2">{article.author}</Typography>
+                  <Typography variant="body2">
+                    {article.updatedAt}/點閱率:{article.viewCount}
+                  </Typography>
+                </div>
+                <AspectRatio minHeight="120px" maxHeight="200px">
+                  {article.coverImage && (
+                    <img src={article.coverImage.url} loading="lazy" alt="" />
+                  )}
+                </AspectRatio>
+                <CardContent>
+                  <Typography fontSize="lg" fontWeight="lg">
+                    {article.previewDescription}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        ))}
     </>
   );
 }
