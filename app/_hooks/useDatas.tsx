@@ -31,7 +31,7 @@ export default function useCourse() {
       try {
         setLoading(true);
         const result = await axios.get(
-          `http://localhost:3000/api?groups=${pathname}&sort=${order}`
+          `https://nextpy-final.vercel.app/api?groups=${pathname}&sort=${order}`
         );
         setCourseList(result.data);
         setLoading(false);
@@ -44,7 +44,7 @@ export default function useCourse() {
       try {
         setLoading(true);
         const result = await axios.get(
-          `http://localhost:3000/api/articles?groups=${pathname}`
+          `https://nextpy-final.vercel.app/api/articles?groups=${pathname}`
         );
         setArticleList(result.data);
         console.log(result.data);

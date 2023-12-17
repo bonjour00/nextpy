@@ -67,7 +67,7 @@ export default function useCourseDetail({ id }: { id: string }) {
       try {
         setLoading(true);
         const result = await axios.get(
-          `http://localhost:3000/api/courseDetail?id=${id}    `
+          `https://nextpy-final.vercel.app/api/courseDetail?id=${id}    `
         );
         setCourseDetail(result.data);
         setLoading(false);
@@ -81,7 +81,7 @@ export default function useCourseDetail({ id }: { id: string }) {
       try {
         setLoading(true);
         const result = await axios.get(
-          `http://localhost:3000/api/articlesDetail?id=${id}    `
+          `https://nextpy-final.vercel.app/api/articlesDetail?id=${id}    `
         );
         setArticleDetail(result.data);
         // console.log(result.data);
@@ -98,7 +98,7 @@ export default function useCourseDetail({ id }: { id: string }) {
     const fetchCourseComment = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:3000/api/comment?id=${id}&page=${page}`
+          `https://nextpy-final.vercel.app/api/comment?id=${id}&page=${page}`
         );
         setComments(result.data);
         setLoading(false);
