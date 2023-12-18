@@ -5,11 +5,42 @@ import Dropdown from "@mui/joy/Dropdown";
 import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signOut,
+  signInWithPopup,
+  onAuthStateChanged,
+  User,
+} from "firebase/auth";
+import app from "@/app/_firebase/Config";
+import { useEffect, useState } from "react";
 
 export default function MenuTool() {
   const router = useRouter();
   const pathname = usePathname();
-
+  const auth = getAuth(app);
+  const [user, setUser] = useState<User | null>(null);
+  const login = async () => {
+    const googleAuthProvider = new GoogleAuthProvider();
+    const res = await signInWithPopup(auth, googleAuthProvider); //登入
+  };
+  const logout = async () => {
+    await signOut(auth);
+  };
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsub = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => {
+      unsub();
+    };
+  }, []);
   return (
     <>
       <AppBar position="fixed" sx={{ bgcolor: "#A4D4D5" }}>
@@ -75,11 +106,14 @@ export default function MenuTool() {
           </div>
           <Dropdown>
             <MenuButton>
-              <Avatar />
+              <Avatar
+                alt={user?.displayName || undefined}
+                src={user?.photoURL || undefined}
+              />
             </MenuButton>
             <Menu>
-              <MenuItem>登入</MenuItem>
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={login}>登入</MenuItem>
+              <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </Dropdown>
         </Toolbar>
