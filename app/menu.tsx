@@ -15,16 +15,21 @@ import {
 } from "firebase/auth";
 import app from "@/app/_firebase/Config";
 import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { handelUser } from "../redux/features/authSlice";
 
 export default function MenuTool() {
   const router = useRouter();
   const pathname = usePathname();
   const auth = getAuth(app);
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
+  const dispatch = useAppDispatch();
+
   const login = async () => {
     const googleAuthProvider = new GoogleAuthProvider();
     const res = await signInWithPopup(auth, googleAuthProvider); //登入
   };
+  const user = useAppSelector((state) => state.auth);
   const logout = async () => {
     await signOut(auth);
   };
@@ -32,11 +37,25 @@ export default function MenuTool() {
     const auth = getAuth(app);
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
+        const data = {
+          email: currentUser.email,
+          url: currentUser.photoURL,
+          name: currentUser.displayName,
+          uid: currentUser.uid,
+        };
+        dispatch(handelUser(data));
       } else {
-        setUser(null);
+        dispatch(
+          handelUser({
+            email: "",
+            url: "",
+            name: "",
+            uid: "",
+          })
+        );
       }
     });
+    console.log(user);
     return () => {
       unsub();
     };
@@ -103,12 +122,44 @@ export default function MenuTool() {
             >
               投資理財
             </Button>
+            {user.user.uid && (
+              <>
+                <Button
+                  style={{
+                    color: "black",
+                    background: pathname === "/articles" ? "white" : "",
+                  }}
+                  onClick={() => router.push("/articles")}
+                  sx={{
+                    "&:hover": {
+                      bgcolor: "white",
+                    },
+                  }}
+                >
+                  我的文章
+                </Button>
+                <Button
+                  style={{
+                    color: "black",
+                    background: pathname === "/chat" ? "white" : "",
+                  }}
+                  onClick={() => router.push("/chat")}
+                  sx={{
+                    "&:hover": {
+                      bgcolor: "white",
+                    },
+                  }}
+                >
+                  問答區
+                </Button>
+              </>
+            )}
           </div>
           <Dropdown>
             <MenuButton>
               <Avatar
-                alt={user?.displayName || undefined}
-                src={user?.photoURL || undefined}
+                alt={user.user.url || undefined}
+                src={user.user.url || undefined}
               />
             </MenuButton>
             <Menu>

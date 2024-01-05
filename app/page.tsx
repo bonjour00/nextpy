@@ -64,6 +64,7 @@ export default function Home() {
               color="primary"
               aria-label="Explore Bahamas Islands"
               sx={{ ml: "auto", alignSelf: "center", fontWeight: 600 }}
+              style={{ background: "#1565C0" }}
             >
               <a
                 href="https://colab.research.google.com/drive/1rS03adf0aPH12cNv4rEr35E_j1B5LEMB"

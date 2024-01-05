@@ -6,12 +6,40 @@ import CardContent from "@mui/joy/CardContent";
 import CardActions from "@mui/joy/CardActions";
 import IconButton from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import { Pagination } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Pagination,
+  TextField,
+} from "@mui/material";
+import { useState } from "react";
+import { getAuth } from "firebase/auth";
+import app from "@/app/_firebase/Config";
+import { useAppSelector } from "@/redux/hooks";
 
-export default function Message({ comments, setPage, page }: any) {
+export default function Message({
+  comments,
+  setPage,
+  page,
+  writeCourseComment,
+}: any) {
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value - 1);
+  };
+  const auth = getAuth(app);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const user = useAppSelector((state) => state.auth);
+  const hide = () => {
+    setOpen(false);
+  };
+  const write = () => {
+    writeCourseComment(message);
+    setOpen(false);
+    setMessage("");
   };
   return (
     <>
@@ -25,6 +53,18 @@ export default function Message({ comments, setPage, page }: any) {
         }}
       >
         留言
+        {user.user.uid ? (
+          <Button
+            sx={{
+              marginLeft: "30px",
+            }}
+            onClick={() => setOpen(true)}
+          >
+            我要留言
+          </Button>
+        ) : (
+          <p>登入享有留言功能~</p>
+        )}
       </Typography>
       {comments.comments &&
         comments.comments.map((comment: any) => (
@@ -65,6 +105,35 @@ export default function Message({ comments, setPage, page }: any) {
           onChange={handleChange}
         />
       </Box>
+      <Dialog open={open} onClose={hide} aria-labelledby="留言">
+        <DialogTitle>新增留言</DialogTitle>
+        <DialogContent>
+          <p />
+          <TextField
+            label="新增留言"
+            variant="outlined"
+            name="comment"
+            multiline
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <p />
+        </DialogContent>
+        <DialogActions>
+          <IconButton
+            aria-label="close"
+            onClick={hide}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Button onClick={write}>新增</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

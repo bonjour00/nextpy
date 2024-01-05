@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const groups = searchParams.get("groups");
     const result = await axios.get(
-      `https://py-flask-final.vercel.app/Articles?groups=${groups}`
+      `http://127.0.0.1:5000/Articles?groups=${groups}`
     );
 
     return NextResponse.json(result.data, { status: 200 });

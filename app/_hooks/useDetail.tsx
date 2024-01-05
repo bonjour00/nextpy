@@ -17,6 +17,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { getAuth } from "firebase/auth";
+import app from "@/app/_firebase/Config";
 type Comment = {
   id: string;
   name: string;
@@ -62,13 +64,15 @@ export default function useCourseDetail({ id }: { id: string }) {
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [page, setPage] = useState(0);
+  const [updated, setUpdated] = useState(0);
+  const auth = getAuth(app);
+
   useEffect(() => {
     const fetchCourseDetail = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/courseDetail?id=${id}    `
-        );
+        // https://nextpy-bonjour00s-projects.vercel.app
+        const result = await axios.get(`/api/courseDetail?id=${id}    `);
         setCourseDetail(result.data);
         setLoading(false);
         console.log(result.data);
@@ -80,11 +84,9 @@ export default function useCourseDetail({ id }: { id: string }) {
     const fetchArticleDetail = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/articlesDetail?id=${id}    `
-        );
+        const result = await axios.get(`/api/articlesDetail?id=${id}    `);
         setArticleDetail(result.data);
-        // console.log(result.data);
+        console.log(result.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -97,9 +99,7 @@ export default function useCourseDetail({ id }: { id: string }) {
   useEffect(() => {
     const fetchCourseComment = async () => {
       try {
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/comment?id=${id}&page=${page}`
-        );
+        const result = await axios.get(`/api/comment?id=${id}&page=${page}`);
         setComments(result.data);
         setLoading(false);
       } catch (error) {
@@ -107,7 +107,19 @@ export default function useCourseDetail({ id }: { id: string }) {
       }
     };
     tab != "1" && fetchCourseComment();
-  }, [page]);
+  }, [page, updated]);
+
+  const writeCourseComment = async (message: string) => {
+    try {
+      const result = await axios.get(
+        `http://127.0.0.1:5000/courseCommentWrite?id=${id}&content=${message}&name=${auth.currentUser?.displayName}&profileImageUrl=${auth.currentUser?.photoURL}`
+      );
+      console.log(result, "write");
+      setUpdated((curr) => curr + 1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return [
     courseDetail,
@@ -116,5 +128,6 @@ export default function useCourseDetail({ id }: { id: string }) {
     setPage,
     page,
     articleDetail,
+    writeCourseComment,
   ] as const;
 }

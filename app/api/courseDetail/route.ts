@@ -6,9 +6,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
-    const result = await axios.get(
-      `https://py-flask-final.vercel.app/COURSEDETAIL/${id}`
-    );
+    const result = await axios.get(`http://127.0.0.1:5000/COURSEDETAIL/${id}`);
     return NextResponse.json(result.data, { status: 200 });
   } catch (err) {
     return NextResponse.json({ message: "ERROR", err }, { status: 500 });

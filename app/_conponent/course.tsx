@@ -7,11 +7,35 @@ import useCourse from "../_hooks/useDatas";
 import Rating from "@mui/material/Rating";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { FormControl, Grid, InputLabel, Tab, Tabs } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
+import { useAppSelector } from "@/redux/hooks";
+import CloseIcon from "@mui/icons-material/Close";
+import moment from "moment";
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Pagination,
+  TextField,
+} from "@mui/material";
+import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
 
 export default function Course() {
   type Course = {
@@ -27,8 +51,17 @@ export default function Course() {
     numRating: number;
   };
 
-  const [data, setOrder, loading, order, setUpdated, tab, setTab, articleList] =
-    useCourse();
+  const [
+    data,
+    setOrder,
+    loading,
+    order,
+    setUpdated,
+    tab,
+    setTab,
+    articleList,
+    writeCourseComment,
+  ] = useCourse();
   const pathname = usePathname().substring(1);
   const router = useRouter();
   const jumpHerf = (item: any) => {
@@ -46,6 +79,49 @@ export default function Course() {
   const jumpLink = (item: any) => {
     router.push(item ? pathname + "/" + item.id + "?tab=1" : pathname);
   };
+  const user = useAppSelector((state) => state.auth);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [titles, setTitles] = useState("");
+  const [description, setDescription] = useState("");
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      [{ align: [] }],
+      [{ color: [] }],
+      ["code-block"],
+      ["clean"],
+    ],
+  };
+  //toolbar:false
+  const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "link",
+    "image",
+    "align",
+    "color",
+    "code-block",
+  ];
+  const hide = () => {
+    setOpen(false);
+  };
+  const write = () => {
+    writeCourseComment(message, titles, description);
+    setOpen(false);
+    setMessage("");
+    setDescription("");
+    setTitles("");
+  };
   return (
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
@@ -54,6 +130,91 @@ export default function Course() {
           <Tab label="文章" />
         </Tabs>
       </Box>
+      {tab == 1 && (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "30px",
+            }}
+          >
+            {user.user.uid ? (
+              <Button
+                variant="contained"
+                onClick={() => setOpen(true)}
+                style={{ background: "#1565C0" }}
+              >
+                發布文章
+              </Button>
+            ) : (
+              <p>登入可發佈文章喔~</p>
+            )}
+          </div>
+
+          <Dialog open={open} onClose={hide} aria-labelledby="留言">
+            <DialogTitle>發佈文章</DialogTitle>
+            <DialogContent>
+              <br />
+              <TextField
+                label="標題"
+                variant="outlined"
+                name="title"
+                multiline
+                fullWidth
+                value={titles}
+                onChange={(e) => setTitles(e.target.value)}
+              />
+              <br />
+              <br />
+              <TextField
+                label="摘要"
+                variant="outlined"
+                name="description"
+                multiline
+                fullWidth
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <br />
+              <br />
+              <TextField
+                label="內文"
+                variant="outlined"
+                name="message"
+                multiline
+                fullWidth
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              {/* <ReactQuill
+                theme="snow"
+                // readOnly={true}
+                modules={quillModules}
+                formats={quillFormats}
+                value={message}
+                onChange={setMessage}
+              /> */}
+              <p />
+            </DialogContent>
+            <DialogActions>
+              <IconButton
+                aria-label="close"
+                onClick={hide}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <Button onClick={write}>發佈</Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
       {tab == 0 && (
         <>
           <Grid container justifyContent="flex-end">
@@ -206,7 +367,8 @@ export default function Course() {
                   <Typography variant="h6">{article.title}</Typography>
                   <Typography variant="body2">{article.author}</Typography>
                   <Typography variant="body2">
-                    {article.updatedAt}/點閱率:{article.viewCount}
+                    {article.updatedAt}/點閱率:
+                    {article.viewCount}
                   </Typography>
                 </div>
                 <AspectRatio minHeight="120px" maxHeight="200px">

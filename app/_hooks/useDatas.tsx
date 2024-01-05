@@ -17,6 +17,7 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import { useAppSelector } from "@/redux/hooks";
 
 export default function useCourse() {
   const pathname = usePathname().substring(1);
@@ -26,13 +27,12 @@ export default function useCourse() {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(0);
   const [tab, setTab] = useState(0);
+  const user = useAppSelector((state) => state.auth);
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api?groups=${pathname}&sort=${order}`
-        );
+        const result = await axios.get(`/api?groups=${pathname}&sort=${order}`);
         setCourseList(result.data);
         setLoading(false);
       } catch (error) {
@@ -43,11 +43,9 @@ export default function useCourse() {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const result = await axios.get(
-          `https://nextpy-bonjour00s-projects.vercel.app/api/articles?groups=${pathname}`
-        );
+        const result = await axios.get(`/api/articles?groups=${pathname}`);
         setArticleList(result.data);
-        console.log(result.data);
+        console.log(result.data, "art");
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -57,6 +55,23 @@ export default function useCourse() {
     fetchArticles();
     tab == 0 ? fetchCourses() : fetchArticles();
   }, [updated]);
+  const writeCourseComment = async (
+    message: string,
+    title: string,
+    description: string
+  ) => {
+    try {
+      const date = Date.now();
+      const result = await axios.get(
+        `http://127.0.0.1:5000/articleWrite?author=${user.user.name}&title=${title}&previewDescription=${description}
+       &uid=${user.user.uid}&content=${message}&groups=${pathname}`
+      );
+      console.log(result, "write");
+      setUpdated((curr) => curr + 1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return [
     courseList,
@@ -67,5 +82,6 @@ export default function useCourse() {
     tab,
     setTab,
     articleList,
+    writeCourseComment,
   ] as const;
 }
