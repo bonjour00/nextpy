@@ -59,6 +59,7 @@ export default function Message({
               marginLeft: "30px",
             }}
             onClick={() => setOpen(true)}
+            style={{ background: "#1565C0" }}
           >
             我要留言
           </Button>
