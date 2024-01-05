@@ -132,7 +132,9 @@ export default function Message({
           >
             <CloseIcon />
           </IconButton>
-          <Button onClick={write}>新增</Button>
+          <Button onClick={write} style={{ background: "#1565C0" }}>
+            新增
+          </Button>
         </DialogActions>
       </Dialog>
     </>
