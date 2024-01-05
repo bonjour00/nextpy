@@ -122,6 +122,20 @@ export default function MenuTool() {
             >
               投資理財
             </Button>
+            <Button
+              style={{
+                color: "black",
+                background: pathname === "/chat" ? "white" : "",
+              }}
+              onClick={() => router.push("/chat")}
+              sx={{
+                "&:hover": {
+                  bgcolor: "white",
+                },
+              }}
+            >
+              問答區
+            </Button>
             {user.user.uid && (
               <>
                 <Button
@@ -137,20 +151,6 @@ export default function MenuTool() {
                   }}
                 >
                   我的文章
-                </Button>
-                <Button
-                  style={{
-                    color: "black",
-                    background: pathname === "/chat" ? "white" : "",
-                  }}
-                  onClick={() => router.push("/chat")}
-                  sx={{
-                    "&:hover": {
-                      bgcolor: "white",
-                    },
-                  }}
-                >
-                  問答區
                 </Button>
               </>
             )}
