@@ -13,10 +13,17 @@ import Typography from "@mui/material/Typography";
 import { AspectRatio } from "@mui/joy";
 
 export default function LanguageDetail({ params }: { params: { id: string } }) {
-  const [courseDetail, loading, comments, setPage, page, articleDetail] =
-    useCourseDetail({
-      id: params.id,
-    });
+  const [
+    courseDetail,
+    loading,
+    comments,
+    setPage,
+    page,
+    articleDetail,
+    writeCourseComment,
+  ] = useCourseDetail({
+    id: params.id,
+  });
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
@@ -65,7 +72,12 @@ export default function LanguageDetail({ params }: { params: { id: string } }) {
       <br />
       {courseDetail && <Chapter chapters={courseDetail.chapters} />}
       {courseDetail && (
-        <Message comments={comments} setPage={setPage} page={page} />
+        <Message
+          comments={comments}
+          setPage={setPage}
+          page={page}
+          writeCourseComment={writeCourseComment}
+        />
       )}
     </>
   ) : (
